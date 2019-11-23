@@ -1,15 +1,9 @@
 ---
-.travis.yml:
+.github/workflows/acceptance.yml:
   beaker_sets:
-    - centos6-64
-    - debian9-64
-    - debian10-64
-  env:
-    global:
-      - PARALLEL_TEST_PROCESSORS=8
-  beaker_puppet_collections:
-    - puppet5
-    - puppet6
+    - centos6
+    - debian9
+    - debian10
 Rakefile:
   param_docs_pattern:
     - manifests/init.pp

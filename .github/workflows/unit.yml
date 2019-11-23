@@ -1,0 +1,38 @@
+name: Unit tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+          - "2.5"
+          - "2.4"
+        puppet:
+          - "6"
+          - "5"
+        exclude:
+          - ruby: "2.5"
+            puppet: "5"
+          - ruby: "2.4"
+            puppet: "6"
+    name: Puppet ${{ matrix.puppet }} (Ruby ${{ matrix.ruby }})
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          architecture: 'x64'
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3 --without system_tests development
+        env:
+          PUPPET_VERSION: "${{ matrix.puppet }}.0"
+      - name: Run tests
+        run: bundle exec rake
+        env:
+          PUPPET_VERSION: "${{ matrix.puppet }}.0"
